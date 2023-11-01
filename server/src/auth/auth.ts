@@ -9,12 +9,12 @@ const router = express.Router()
 initializePassport(passport)
 router.post('/register', async (req, res) => {
     const user = await User.findOne({ username: req.body.username })
-    if(user) return res.status(400).send("User already exists")
+    if(user) return res.status(409).send("User already exists")
     const newUser = await User.create(req.body)
     res.status(201).send(newUser)
 })
 
-router.post('/login', passport.authenticate("local"), (req, res) => { 
+router.post('/login', passport.authenticate("local"), (req, res) => {
     res.status(200).send(req.user)
 })
 

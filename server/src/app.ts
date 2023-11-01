@@ -4,6 +4,7 @@ import passport from 'passport';
 import expressSession from 'express-session'
 import { connectToMongoose } from './database/database';
 import kanban from './kanban/kanban';
+import cors from 'cors';
 
 
 const app = express();
@@ -13,12 +14,12 @@ app.use(expressSession({secret: "secret", resave: false, saveUninitialized: fals
 app.use(passport.initialize())
 app.use(passport.session())
 connectToMongoose()
-
+app.use(cors());
 app.use('/api/auth', auth)
 app.use('/api/kanban', kanban)
 
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 app.listen(port, () => {
     console.log(`listening on port http://localhost${port}...`);
 })
