@@ -1,7 +1,7 @@
 import express from 'express';
 import { User } from '../database/database'
 import passport from 'passport'
-import { initializePassport } from './passportConfig'
+import { initializePassport, isAuthorized } from './passportConfig'
 
 
 const router = express.Router()
@@ -15,7 +15,8 @@ router.post('/register', async (req, res) => {
 })
 
 router.post('/login', passport.authenticate("local"), (req, res) => {
-    res.status(200).send(req.user)
+    const user: any = req.user
+    res.status(200).send(user._id)
 })
 
 router.post('/logout', (req, res) => {
@@ -27,5 +28,14 @@ router.post('/logout', (req, res) => {
     });
     res.status(200).send("Logged out successfully");
 });
+
+router.get('/', isAuthorized, (req: any, res: any) => {
+    try {
+        return res.send(JSON.stringify({error: "authorized", username: req.user}))
+    } catch (error) {
+        return res.send(JSON.stringify({error:"unauthorized"}))
+    }
+    
+})
 
 export default router

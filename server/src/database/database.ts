@@ -24,8 +24,7 @@ const kanbanSchema = new mongoose.Schema({
     username: String,
     title: String,
     description: String,
-    tags:[String],
-    stage: String
+    category: String
 })
 
 export const User = mongoose.model("User", userSchema)

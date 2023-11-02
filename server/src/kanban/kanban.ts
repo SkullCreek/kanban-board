@@ -1,31 +1,34 @@
 import express from 'express';
 import { isAuthorized } from '../auth/passportConfig'
-import { Kanban } from '../database/database'
+import { Kanban, User } from '../database/database'
 
 const router = express.Router()
 
-router.post('/', isAuthorized, async (req: any, res: any)=>{
+router.post('/', async (req: any, res: any)=>{
     if(!req.body.username) return res.status(400).send('Bad Request')
     const newKanban = await Kanban.create(req.body)
     if(newKanban) return res.status(201).send(newKanban)
     return res.status(400).send('Bad Request')
 })
 
-router.get('/', isAuthorized, async (req: any, res: any) => {
-    const kanbans = await Kanban.find({ username: req.user.username })
+router.get('/:id', async (req: any, res: any) => {
+    const id = req.params.id;
+    
+    const user = await User.findById(id)
+    const kanbans: any = await Kanban.find({username: user?.username})
+    if(kanbans.length == 0) return res.status(200).send(JSON.stringify([{username: user?.username}]))
     if(kanbans) return res.status(200).send(kanbans)
     return res.status(400).send("Something went wrong...")
 })
 
-router.put('/', isAuthorized, async (req: any, res: any) => {
-    const { id, title, description, tags, stage } = req.body;
+router.put('/', async (req: any, res: any) => {
+    const { id, title, description, category } = req.body;
 
     try {
         const updateFields: any = {};
         if(title) updateFields.title = title
         if(description) updateFields.description = description
-        if(tags) updateFields.tags = tags
-        if(stage) updateFields.stage = stage
+        if(category) updateFields.category = category
 
         const updatedKanban = await Kanban.findByIdAndUpdate(
             id,
@@ -44,7 +47,8 @@ router.put('/', isAuthorized, async (req: any, res: any) => {
     }
 })
 
-router.delete('/:id', isAuthorized, async (req: any, res: any) => {
+router.delete('/:id', async (req: any, res: any) => {
+    console.log(req.params.id)
     const deletedKanban = await Kanban.findByIdAndRemove(req.params.id);
     if (deletedKanban) {
         return res.status(200).send(deletedKanban);

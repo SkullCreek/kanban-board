@@ -1,3 +1,4 @@
+import { log } from 'console'
 import React, { useRef, useState } from 'react'
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
@@ -31,6 +32,7 @@ const Login = () => {
         }
     })
     .then(data => {
+        sessionStorage.setItem('_au_', data)
         navigate('/')
     })
     .catch(error => {

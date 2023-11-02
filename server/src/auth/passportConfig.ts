@@ -32,5 +32,5 @@ export const initializePassport = (passport: any) => {
 
 export const isAuthorized = (req: any, res: any, next: any) => {
     if(req.user ) return next()
-    return res.status(401).send('Unauthorized')
+    return res.status(401).send(JSON.stringify('Unauthorized'))
 }

@@ -14,7 +14,9 @@ app.use(expressSession({secret: "secret", resave: false, saveUninitialized: fals
 app.use(passport.initialize())
 app.use(passport.session())
 connectToMongoose()
-app.use(cors());
+app.use(cors({
+    origin: '*',
+  }));
 app.use('/api/auth', auth)
 app.use('/api/kanban', kanban)
 
